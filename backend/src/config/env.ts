@@ -22,16 +22,13 @@ export const getJwtSecret = () => {
     return secret;
   }
 
+  // In production, throw error if JWT_SECRET is not set
   if (process.env.NODE_ENV === 'production') {
-    if (!runtimeJwtSecret) {
-      runtimeJwtSecret = crypto.randomBytes(32).toString('hex');
-      console.warn(
-        '[AUTH WARNING]: JWT_SECRET is not set. Generated a temporary runtime secret; users will be logged out after every server restart. Set JWT_SECRET in Render for stable sessions.'
-      );
-    }
-
-    return runtimeJwtSecret;
+    throw new Error(
+      'JWT_SECRET environment variable must be set in production. Please set it in your Render environment variables.'
+    );
   }
 
+  // Development fallback
   return 'supersecretkeyteamcrm';
 };
