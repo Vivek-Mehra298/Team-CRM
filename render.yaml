@@ -13,7 +13,7 @@ services:
       - key: MONGODB_URI
         sync: false
       - key: JWT_SECRET
-        generateValue: false
+        generateValue: true
       - key: CLIENT_URL
         sync: false
       - key: CORS_ORIGIN
