@@ -40,7 +40,12 @@ export const CLIENT_URL = normalizeUrl(process.env.CLIENT_URL) || defaultClientU
 
 export const ALLOWED_ORIGINS = Array.from(
   new Set(
-    [normalizeOrigin(CLIENT_URL), ...parseList(process.env.CORS_ORIGIN).map(normalizeOrigin)]
+    [
+      normalizeOrigin(CLIENT_URL),
+      ...parseList(process.env.CORS_ORIGIN).map(normalizeOrigin),
+      'http://localhost:3000',
+      'http://127.0.0.1:3000'
+    ]
       .filter((origin): origin is string => Boolean(origin))
   )
 );
