@@ -41,11 +41,11 @@ Allow Render to connect by adding Render outbound IPs to Atlas, or use `0.0.0.0/
 Use the root `render.yaml` blueprint, or create a Web Service manually:
 
 - Root directory: `backend`
-- Build command: `npm ci && npm run build`
+- Build command: `npm ci --include=dev && npm run build`
 - Start command: `npm start`
 - Health check path: `/`
 
-Do not use `npm build` as the Render build command. The correct command is `npm run build`, or `npm ci && npm run build`.
+Do not use `npm build` as the Render build command. The correct command is `npm ci --include=dev && npm run build`.
 
 Required Render environment variables:
 
