@@ -63,6 +63,17 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/audit-logs', auditRoutes);
 
+// Compatibility routes for frontend builds that were deployed with a backend
+// base URL missing the /api prefix.
+app.use('/auth', authRoutes);
+app.use('/org', orgRoutes);
+app.use('/customers', customerRoutes);
+app.use('/tasks', taskRoutes);
+app.use('/chat', chatRoutes);
+app.use('/notifications', notificationRoutes);
+app.use('/analytics', analyticsRoutes);
+app.use('/audit-logs', auditRoutes);
+
 // Secure, Isolated File Downloads
 app.get('/api/files/download/:filename', authenticateJWT, async (req: AuthenticatedRequest, res: Response) => {
   try {
