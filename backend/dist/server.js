@@ -11,6 +11,7 @@ const fs_1 = __importDefault(require("fs"));
 // Load variables
 dotenv_1.default.config();
 const db_1 = require("./config/db");
+const env_1 = require("./config/env");
 const redis_1 = require("./config/redis");
 const socketManager_1 = require("./services/socketManager");
 const error_1 = require("./middleware/error");
@@ -35,9 +36,15 @@ const PORT = process.env.PORT || 5000;
 (0, socketManager_1.initSocket)(server);
 // Middleware
 app.use((0, cors_1.default)({
-    origin: '*', // Adjust origins in production
+    origin: (origin, callback) => {
+        if (!origin || env_1.ALLOWED_ORIGINS.includes(origin)) {
+            return callback(null, true);
+        }
+        return callback(new Error(`CORS blocked origin: ${origin}`));
+    },
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
 }));
 app.use(express_1.default.json());
 // Routes Registry

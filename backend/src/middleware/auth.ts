@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { UserRole } from '../models/User';
+import { getJwtSecret } from '../config/env';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'supersecretkeyteamcrm';
+const JWT_SECRET = getJwtSecret();
 
 export interface AuthenticatedRequest extends Request {
   user?: {

@@ -5,6 +5,7 @@ import ChatMessage from '../models/ChatMessage';
 import Notification from '../models/Notification';
 import User from '../models/User';
 import mongoose from 'mongoose';
+import { ALLOWED_ORIGINS, getJwtSecret } from '../config/env';
 
 interface SocketUser {
   id: string;
@@ -19,7 +20,7 @@ interface AuthenticatedSocket extends Socket {
 }
 
 let ioServer: Server | null = null;
-const JWT_SECRET = process.env.JWT_SECRET || 'supersecretkeyteamcrm';
+const JWT_SECRET = getJwtSecret();
 
 // Track online sockets by userId in-memory for immediate lookup (in addition to Redis keys)
 const userSockets = new Map<string, string[]>(); // userId -> socketId[]
@@ -27,8 +28,9 @@ const userSockets = new Map<string, string[]>(); // userId -> socketId[]
 export const initSocket = (server: any) => {
   ioServer = new Server(server, {
     cors: {
-      origin: '*', // Allow all origins for development, can lock down in production
+      origin: ALLOWED_ORIGINS,
       methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+      credentials: true,
     },
   });
 

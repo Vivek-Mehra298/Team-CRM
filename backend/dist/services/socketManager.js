@@ -10,15 +10,17 @@ const ChatMessage_1 = __importDefault(require("../models/ChatMessage"));
 const Notification_1 = __importDefault(require("../models/Notification"));
 const User_1 = __importDefault(require("../models/User"));
 const mongoose_1 = __importDefault(require("mongoose"));
+const env_1 = require("../config/env");
 let ioServer = null;
-const JWT_SECRET = process.env.JWT_SECRET || 'supersecretkeyteamcrm';
+const JWT_SECRET = (0, env_1.getJwtSecret)();
 // Track online sockets by userId in-memory for immediate lookup (in addition to Redis keys)
 const userSockets = new Map(); // userId -> socketId[]
 const initSocket = (server) => {
     ioServer = new socket_io_1.Server(server, {
         cors: {
-            origin: '*', // Allow all origins for development, can lock down in production
+            origin: env_1.ALLOWED_ORIGINS,
             methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+            credentials: true,
         },
     });
     // Socket Auth Middleware

@@ -250,7 +250,7 @@ export default function ChatPage() {
       </div>
 
       {/* 2. Chat Area */}
-      <div className="flex-grow flex flex-col justify-between min-w-0 bg-background/30">
+      <div className="grow flex flex-col justify-between min-w-0 bg-background/30">
         
         {/* Header */}
         <div className="h-14 border-b border-border px-6 flex items-center justify-between shrink-0 bg-card">
@@ -268,7 +268,7 @@ export default function ChatPage() {
           initial="hidden"
           animate="show"
           key={activeChannelId}
-          className="flex-grow overflow-y-auto p-6 space-y-4 no-scrollbar"
+          className="grow overflow-y-auto p-6 space-y-4 no-scrollbar"
         >
           {activeMessages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center text-xs text-muted py-12">
@@ -291,7 +291,7 @@ export default function ChatPage() {
                     {msg.senderName[0]}
                   </div>
 
-                  <div className="space-y-1.5 min-w-0 flex-grow">
+                  <div className="space-y-1.5 min-w-0 grow">
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-foreground">{msg.senderName}</span>
                       <span className="text-[9px] text-muted font-mono">
@@ -299,7 +299,7 @@ export default function ChatPage() {
                       </span>
                     </div>
                     
-                    <div className="text-slate-700 leading-relaxed break-words">{msg.content}</div>
+                    <div className="text-slate-700 leading-relaxed wrap-break-word">{msg.content}</div>
 
                     {/* Reactions & Receipts */}
                     <div className="flex items-center gap-2 flex-wrap mt-1">
@@ -360,7 +360,7 @@ export default function ChatPage() {
               placeholder={`Message ${getChannelDisplayName(activeChannelId)}...`}
               value={inputText}
               onChange={handleInputChange}
-              className="flex-grow h-10 px-4 rounded-lg border border-border bg-background text-foreground text-xs focus:border-sky-500 focus:outline-none placeholder:text-slate-400"
+              className="grow h-10 px-4 rounded-lg border border-border bg-background text-foreground text-xs focus:border-sky-500 focus:outline-none placeholder:text-slate-400"
               required
             />
             <button

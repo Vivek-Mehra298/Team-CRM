@@ -8,8 +8,9 @@ import Invitation from '../models/Invitation';
 import AuditLog from '../models/AuditLog';
 import { sendVerificationEmail, sendPasswordResetEmail } from '../services/emailService';
 import { AuthenticatedRequest } from '../middleware/auth';
+import { getJwtSecret } from '../config/env';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'supersecretkeyteamcrm';
+const JWT_SECRET = getJwtSecret();
 
 export const signup = async (req: Request, res: Response) => {
   try {

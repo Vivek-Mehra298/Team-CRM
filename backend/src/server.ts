@@ -2,13 +2,14 @@ import express from 'express';
 import http from 'http';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import path from 'path';
 import fs from 'fs';
+import type { Response } from 'express';
 
 // Load variables
 dotenv.config();
 
 import { connectDB } from './config/db';
+import { ALLOWED_ORIGINS } from './config/env';
 import { initRedis } from './config/redis';
 import { initSocket } from './services/socketManager';
 import { errorHandler } from './middleware/error';
@@ -39,9 +40,16 @@ initSocket(server);
 
 // Middleware
 app.use(cors({
-  origin: '*', // Adjust origins in production
+  origin: (origin, callback) => {
+    if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`CORS blocked origin: ${origin}`));
+  },
   methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
 }));
 app.use(express.json());
 
@@ -56,7 +64,7 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/audit-logs', auditRoutes);
 
 // Secure, Isolated File Downloads
-app.get('/api/files/download/:filename', authenticateJWT, async (req: AuthenticatedRequest, res: Response | any) => {
+app.get('/api/files/download/:filename', authenticateJWT, async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { filename } = req.params;
     if (!req.user) {

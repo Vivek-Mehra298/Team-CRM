@@ -12,7 +12,8 @@ const Organization_1 = __importDefault(require("../models/Organization"));
 const Invitation_1 = __importDefault(require("../models/Invitation"));
 const AuditLog_1 = __importDefault(require("../models/AuditLog"));
 const emailService_1 = require("../services/emailService");
-const JWT_SECRET = process.env.JWT_SECRET || 'supersecretkeyteamcrm';
+const env_1 = require("../config/env");
+const JWT_SECRET = (0, env_1.getJwtSecret)();
 const signup = async (req, res) => {
     try {
         const { name, password, orgName, inviteToken } = req.body;

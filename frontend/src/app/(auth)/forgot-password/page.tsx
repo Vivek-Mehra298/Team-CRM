@@ -35,7 +35,7 @@ function ForgotPasswordForm() {
         method: 'POST',
         bodyData: { email },
       });
-      setSuccess('If the account exists, we logged the password reset link to your server console.');
+      setSuccess('If the account exists, we sent a password reset link.');
     } catch (err: any) {
       setError(err.message || 'Failed to send password reset request.');
     } finally {
@@ -198,4 +198,3 @@ export default function ForgotPasswordPage() {
     </Suspense>
   );
 }
-
