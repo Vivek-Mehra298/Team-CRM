@@ -45,6 +45,8 @@ Use the root `render.yaml` blueprint, or create a Web Service manually:
 - Start command: `npm start`
 - Health check path: `/`
 
+Do not use `npm build` as the Render build command. The correct command is `npm run build`, or `npm ci && npm run build`.
+
 Required Render environment variables:
 
 ```env
