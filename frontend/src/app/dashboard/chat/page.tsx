@@ -169,19 +169,19 @@ export default function ChatPage() {
   } as const;
 
   return (
-    <div className="flex h-[calc(100vh-10rem)] border border-border bg-card rounded-xl overflow-hidden select-none shadow-sm">
+    <div className="flex h-[calc(100dvh-7rem)] sm:h-[calc(100dvh-8rem)] lg:h-[calc(100vh-10rem)] border border-border bg-card rounded-xl overflow-hidden select-none shadow-sm">
       
       {/* 1. Left panel */}
-      <div className={`w-full lg:w-64 border-r border-border bg-card flex flex-col justify-between shrink-0 ${
+      <div className={`w-full sm:w-72 lg:w-64 border-r border-border bg-card flex flex-col justify-between shrink-0 transition-all duration-200 ${
         mobileView === 'list' ? 'flex' : 'hidden lg:flex'
       }`}>
-        <div className="p-4 space-y-6 overflow-y-auto no-scrollbar">
+        <div className="p-3 sm:p-4 space-y-6 overflow-y-auto no-scrollbar">
           
           {/* Channels list */}
           <div>
-            <div className="text-[10px] font-bold uppercase tracking-wider text-muted mb-3 px-2 flex items-center justify-between">
+            <div className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-muted mb-3 px-2 flex items-center justify-between">
               <span>Text Channels</span>
-              <Users className="w-3.5 h-3.5" />
+              <Users className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
             </div>
             <div className="space-y-1">
               {CHANNELS.map((ch) => {
@@ -193,14 +193,14 @@ export default function ChatPage() {
                       setActiveChannelId(ch.id);
                       setMobileView('chat');
                     }}
-                    className={`w-full flex items-center h-8 px-2 rounded-lg text-xs font-semibold gap-2.5 transition-colors text-left ${
+                    className={`w-full flex items-center min-h-10 sm:h-8 px-2 sm:px-2 py-2 sm:py-0 rounded-lg text-xs font-semibold gap-2.5 transition-colors text-left ${
                       isActive 
                         ? 'bg-sky-500/10 text-sky-600' 
                         : 'text-muted hover:text-foreground hover:bg-slate-50'
                     }`}
                   >
-                    <Hash className="w-4 h-4 shrink-0 text-muted" />
-                    <span>{ch.name}</span>
+                    <Hash className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-muted" />
+                    <span className="truncate">{ch.name}</span>
                   </button>
                 );
               })}
@@ -209,7 +209,7 @@ export default function ChatPage() {
 
           {/* DMs list */}
           <div>
-            <div className="text-[10px] font-bold uppercase tracking-wider text-muted mb-3 px-2">
+            <div className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-muted mb-3 px-2">
               Direct Messages
             </div>
             <div className="space-y-1">
@@ -231,7 +231,7 @@ export default function ChatPage() {
                         handleSelectDM(member._id);
                         setMobileView('chat');
                       }}
-                      className={`w-full flex items-center h-8 px-2 rounded-lg text-xs font-semibold gap-2.5 transition-colors text-left ${
+                      className={`w-full flex items-center min-h-10 sm:h-8 px-2 py-2 sm:py-0 rounded-lg text-xs font-semibold gap-2.5 transition-colors text-left ${
                         isSelected 
                           ? 'bg-sky-500/10 text-sky-600' 
                           : 'text-muted hover:text-foreground hover:bg-slate-50'
@@ -265,19 +265,19 @@ export default function ChatPage() {
       }`}>
         
         {/* Header */}
-        <div className="h-14 border-b border-border px-6 flex items-center justify-between shrink-0 bg-card">
-          <div className="flex items-center gap-3 min-w-0">
+        <div className="min-h-14 sm:h-14 border-b border-border px-2 sm:px-4 lg:px-6 py-2 sm:py-0 flex items-center justify-between shrink-0 bg-card">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <button
               onClick={() => setMobileView('list')}
-              className="p-1.5 rounded-lg border border-border bg-background text-muted hover:text-foreground lg:hidden flex items-center justify-center transition-colors cursor-pointer shrink-0"
+              className="p-2 sm:p-1.5 rounded-lg border border-border bg-background text-muted hover:text-foreground lg:hidden flex items-center justify-center transition-colors cursor-pointer shrink-0 active:bg-slate-100"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft className="w-5 h-5 sm:w-4 sm:h-4" />
             </button>
             <div className="min-w-0">
-              <h3 className="text-xs font-bold text-foreground tracking-tight flex items-center gap-1 truncate">
+              <h3 className="text-sm sm:text-xs font-bold text-foreground tracking-tight flex items-center gap-1 truncate">
                 {getChannelDisplayName(activeChannelId)}
               </h3>
-              <p className="text-[10px] text-muted mt-0.5 truncate">{getChannelDescription(activeChannelId)}</p>
+              <p className="text-[9px] sm:text-[10px] text-muted mt-0.5 truncate">{getChannelDescription(activeChannelId)}</p>
             </div>
           </div>
         </div>
@@ -288,12 +288,12 @@ export default function ChatPage() {
           initial="hidden"
           animate="show"
           key={activeChannelId}
-          className="grow overflow-y-auto p-6 space-y-4 no-scrollbar"
+          className="grow overflow-y-auto p-3 sm:p-4 lg:p-6 space-y-3 sm:space-y-4 no-scrollbar"
         >
           {activeMessages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-center text-xs text-muted py-12">
+            <div className="flex flex-col items-center justify-center h-full text-center text-xs text-muted py-12 px-4">
               <MessageSquarePlus className="w-8 h-8 text-slate-300 mb-2" />
-              <span>This is the start of the chat history. Send a message to initiate discussion.</span>
+              <span className="text-xs sm:text-sm">This is the start of the chat history. Send a message to initiate discussion.</span>
             </div>
           ) : (
             activeMessages.map((msg) => {
@@ -305,32 +305,32 @@ export default function ChatPage() {
                 <motion.div 
                   variants={bubbleVariants}
                   key={msg._id} 
-                  className="flex gap-3 items-start text-xs group"
+                  className="flex gap-2 sm:gap-3 items-start text-xs group"
                 >
-                  <div className="w-8 h-8 rounded bg-background border border-border text-sky-600 font-extrabold flex items-center justify-center shrink-0 uppercase">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded bg-background border border-border text-sky-600 font-extrabold flex items-center justify-center shrink-0 uppercase text-[10px]">
                     {msg.senderName[0]}
                   </div>
 
                   <div className="space-y-1.5 min-w-0 grow">
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-foreground">{msg.senderName}</span>
-                      <span className="text-[9px] text-muted font-mono">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-bold text-foreground text-xs">{msg.senderName}</span>
+                      <span className="text-[8px] sm:text-[9px] text-muted font-mono">
                         {new Date(msg.createdAt).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>
                     
-                    <div className="text-slate-700 leading-relaxed break-words">{msg.content}</div>
+                    <div className="text-slate-700 leading-relaxed wrap-break-word text-xs sm:text-sm">{msg.content}</div>
 
                     {/* Reactions & Receipts */}
-                    <div className="flex items-center gap-2 flex-wrap mt-1">
+                    <div className="flex items-center gap-1 sm:gap-2 flex-wrap mt-1">
                       {msg.emojiReactions && msg.emojiReactions.map((react, i) => (
                         <button
                           key={i}
                           onClick={() => handleToggleReaction(msg._id, react.emoji)}
-                          className="px-1.5 py-0.5 rounded-full bg-background border border-border hover:border-slate-300 text-[10px] text-muted flex items-center gap-1 transition-colors cursor-pointer"
+                          className="px-1 sm:px-1.5 py-0.5 rounded-full bg-background border border-border hover:border-slate-300 text-[9px] sm:text-[10px] text-muted flex items-center gap-1 transition-colors cursor-pointer active:bg-slate-100"
                         >
                           <span>{react.emoji}</span>
-                          <span className="text-[8px] text-muted font-mono font-bold">{msg.emojiReactions.filter(r => r.emoji === react.emoji).length}</span>
+                          <span className="text-[7px] sm:text-[8px] text-muted font-mono font-bold">{msg.emojiReactions.filter(r => r.emoji === react.emoji).length}</span>
                         </button>
                       ))}
 
@@ -340,7 +340,7 @@ export default function ChatPage() {
                           <button
                             key={emoji}
                             onClick={() => handleToggleReaction(msg._id, emoji)}
-                            className="w-5 h-5 rounded hover:bg-slate-100 border border-transparent hover:border-border flex items-center justify-center text-[10px] transition-colors cursor-pointer"
+                            className="w-5 h-5 rounded hover:bg-slate-100 border border-transparent hover:border-border flex items-center justify-center text-[10px] transition-colors cursor-pointer active:bg-slate-200"
                           >
                             {emoji}
                           </button>
@@ -349,11 +349,11 @@ export default function ChatPage() {
 
                       {/* receipts */}
                       {activeChannelId.startsWith('dm:') && isSelf && (
-                        <div className="ml-auto flex items-center text-[9px] text-gray-400 font-mono">
+                        <div className="ml-auto flex items-center text-[8px] sm:text-[9px] text-gray-400 font-mono">
                           {isRead ? (
-                            <span className="text-sky-600 flex items-center gap-0.5"><CheckCheck className="w-3.5 h-3.5" /> Read</span>
+                            <span className="text-sky-600 flex items-center gap-0.5"><CheckCheck className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> Read</span>
                           ) : (
-                            <span className="flex items-center gap-0.5"><Check className="w-3.5 h-3.5" /> Sent</span>
+                            <span className="flex items-center gap-0.5"><Check className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> Sent</span>
                           )}
                         </div>
                       )}
@@ -367,28 +367,28 @@ export default function ChatPage() {
         </motion.div>
 
         {/* Input Bar */}
-        <div className="p-4 border-t border-border bg-card shrink-0 space-y-2">
+        <div className="p-3 sm:p-4 border-t border-border bg-card shrink-0 space-y-2">
           {typingNames.length > 0 && (
-            <div className="text-[10px] text-muted font-medium italic animate-pulse">
+            <div className="text-[9px] sm:text-[10px] text-muted font-medium italic animate-pulse">
               {typingNames.join(', ')} {typingNames.length > 1 ? 'are' : 'is'} typing...
             </div>
           )}
 
-          <form onSubmit={handleSendMessage} className="flex gap-3">
+          <form onSubmit={handleSendMessage} className="flex gap-2 sm:gap-3">
             <input
               type="text"
               placeholder={`Message ${getChannelDisplayName(activeChannelId)}...`}
               value={inputText}
               onChange={handleInputChange}
-              className="grow h-10 px-4 rounded-lg border border-border bg-background text-foreground text-xs focus:border-sky-500 focus:outline-none placeholder:text-slate-400"
+              className="grow h-10 sm:h-10 px-3 sm:px-4 rounded-lg border border-border bg-background text-foreground text-sm sm:text-xs focus:border-sky-500 focus:outline-none placeholder:text-slate-400"
               required
             />
             <button
               type="submit"
               disabled={!inputText.trim()}
-              className="w-10 h-10 rounded-lg bg-sky-600 hover:bg-sky-500 text-white flex items-center justify-center transition-colors disabled:opacity-30 cursor-pointer shadow-sm"
+              className="w-10 h-10 rounded-lg bg-sky-600 hover:bg-sky-500 active:bg-sky-700 text-white flex items-center justify-center transition-colors disabled:opacity-30 cursor-pointer shadow-sm shrink-0"
             >
-              <Send className="w-4 h-4" />
+              <Send className="w-4 h-4 sm:w-4 sm:h-4" />
             </button>
           </form>
         </div>
