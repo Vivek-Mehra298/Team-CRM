@@ -46,8 +46,10 @@ const inviteMember = async (req, res) => {
         // Get organization details
         const org = await Organization_1.default.findById(req.user.orgId);
         const orgName = org ? org.name : 'TeamCRM Workspace';
-        // Send invite email (mocked)
-        await (0, emailService_1.sendInviteEmail)(targetEmail, orgName, inviteToken);
+        // Send invite email in the background (non-blocking)
+        (0, emailService_1.sendInviteEmail)(targetEmail, orgName, inviteToken).catch((err) => {
+            console.error('[EMAIL ERROR]: Background invitation email sending failed:', err);
+        });
         // Create Audit Log
         const audit = new AuditLog_1.default({
             orgId: req.user.orgId,

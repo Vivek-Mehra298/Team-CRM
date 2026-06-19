@@ -72,8 +72,10 @@ export const signup = async (req: Request, res: Response) => {
     await newUser.save();
 
     if (!inviteToken) {
-      // Send verification email (mocked)
-      await sendVerificationEmail(email, verificationToken);
+      // Send verification email in the background (non-blocking)
+      sendVerificationEmail(email, verificationToken).catch((err) => {
+        console.error('[EMAIL ERROR]: Background verification email sending failed:', err);
+      });
     }
 
     // Get organization name
@@ -231,8 +233,10 @@ export const forgotPassword = async (req: Request, res: Response) => {
     user.resetPasswordExpires = new Date(Date.now() + 3600000); // 1 hour
     await user.save();
 
-    // Send reset email (mocked)
-    await sendPasswordResetEmail(user.email, resetToken);
+    // Send reset email in the background (non-blocking)
+    sendPasswordResetEmail(user.email, resetToken).catch((err) => {
+      console.error('[EMAIL ERROR]: Background password reset email sending failed:', err);
+    });
 
     res.status(200).json({ message: 'If that email exists, we sent a password reset link.' });
   } catch (error: any) {

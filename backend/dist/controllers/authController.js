@@ -64,8 +64,10 @@ const signup = async (req, res) => {
         });
         await newUser.save();
         if (!inviteToken) {
-            // Send verification email (mocked)
-            await (0, emailService_1.sendVerificationEmail)(email, verificationToken);
+            // Send verification email in the background (non-blocking)
+            (0, emailService_1.sendVerificationEmail)(email, verificationToken).catch((err) => {
+                console.error('[EMAIL ERROR]: Background verification email sending failed:', err);
+            });
         }
         // Get organization name
         const org = await Organization_1.default.findById(orgId);
@@ -201,8 +203,10 @@ const forgotPassword = async (req, res) => {
         user.resetPasswordToken = resetToken;
         user.resetPasswordExpires = new Date(Date.now() + 3600000); // 1 hour
         await user.save();
-        // Send reset email (mocked)
-        await (0, emailService_1.sendPasswordResetEmail)(user.email, resetToken);
+        // Send reset email in the background (non-blocking)
+        (0, emailService_1.sendPasswordResetEmail)(user.email, resetToken).catch((err) => {
+            console.error('[EMAIL ERROR]: Background password reset email sending failed:', err);
+        });
         res.status(200).json({ message: 'If that email exists, we sent a password reset link.' });
     }
     catch (error) {

@@ -18,6 +18,9 @@ if (smtpHost && smtpUser && smtpPass) {
       user: smtpUser,
       pass: smtpPass,
     },
+    connectionTimeout: 10000, // 10 seconds
+    greetingTimeout: 10000,   // 10 seconds
+    socketTimeout: 15000,     // 15 seconds
   });
   console.log('[EMAIL SERVICE]: SMTP Transporter initialized successfully.');
 } else {
