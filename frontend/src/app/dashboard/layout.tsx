@@ -273,7 +273,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </header>
 
         {/* Page content panel */}
-        <main className="flex-grow p-6 overflow-y-auto no-scrollbar relative z-0">
+        <main className="flex-grow p-4 sm:p-6 overflow-y-auto no-scrollbar relative z-0">
           {children}
         </main>
       </div>

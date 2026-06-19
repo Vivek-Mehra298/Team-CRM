@@ -172,8 +172,8 @@ export default function ChatPage() {
     <div className="flex h-[calc(100vh-10rem)] border border-border bg-card rounded-xl overflow-hidden select-none shadow-sm">
       
       {/* 1. Left panel */}
-      <div className={`w-full md:w-64 border-r border-border bg-card flex flex-col justify-between shrink-0 ${
-        mobileView === 'list' ? 'flex' : 'hidden md:flex'
+      <div className={`w-full lg:w-64 border-r border-border bg-card flex flex-col justify-between shrink-0 ${
+        mobileView === 'list' ? 'flex' : 'hidden lg:flex'
       }`}>
         <div className="p-4 space-y-6 overflow-y-auto no-scrollbar">
           
@@ -261,7 +261,7 @@ export default function ChatPage() {
 
       {/* 2. Chat Area */}
       <div className={`grow flex flex-col justify-between min-w-0 bg-background/30 ${
-        mobileView === 'chat' ? 'flex w-full' : 'hidden md:flex'
+        mobileView === 'chat' ? 'flex w-full' : 'hidden lg:flex'
       }`}>
         
         {/* Header */}
@@ -269,7 +269,7 @@ export default function ChatPage() {
           <div className="flex items-center gap-3 min-w-0">
             <button
               onClick={() => setMobileView('list')}
-              className="p-1.5 rounded-lg border border-border bg-background text-muted hover:text-foreground md:hidden flex items-center justify-center transition-colors cursor-pointer shrink-0"
+              className="p-1.5 rounded-lg border border-border bg-background text-muted hover:text-foreground lg:hidden flex items-center justify-center transition-colors cursor-pointer shrink-0"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -319,7 +319,7 @@ export default function ChatPage() {
                       </span>
                     </div>
                     
-                    <div className="text-slate-700 leading-relaxed wrap-break-word">{msg.content}</div>
+                    <div className="text-slate-700 leading-relaxed break-words">{msg.content}</div>
 
                     {/* Reactions & Receipts */}
                     <div className="flex items-center gap-2 flex-wrap mt-1">
