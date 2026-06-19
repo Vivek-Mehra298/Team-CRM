@@ -21,7 +21,8 @@ import {
   Check, 
   CheckCheck, 
   MessageSquarePlus,
-  Users
+  Users,
+  ChevronLeft
 } from 'lucide-react';
 
 const CHANNELS = [
@@ -42,6 +43,7 @@ export default function ChatPage() {
 
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [mobileView, setMobileView] = useState<'list' | 'chat'>('list');
   
   const threadEndRef = useRef<HTMLDivElement | null>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -170,7 +172,9 @@ export default function ChatPage() {
     <div className="flex h-[calc(100vh-10rem)] border border-border bg-card rounded-xl overflow-hidden select-none shadow-sm">
       
       {/* 1. Left panel */}
-      <div className="w-64 border-r border-border bg-card flex flex-col justify-between shrink-0">
+      <div className={`w-full md:w-64 border-r border-border bg-card flex flex-col justify-between shrink-0 ${
+        mobileView === 'list' ? 'flex' : 'hidden md:flex'
+      }`}>
         <div className="p-4 space-y-6 overflow-y-auto no-scrollbar">
           
           {/* Channels list */}
@@ -185,7 +189,10 @@ export default function ChatPage() {
                 return (
                   <button
                     key={ch.id}
-                    onClick={() => setActiveChannelId(ch.id)}
+                    onClick={() => {
+                      setActiveChannelId(ch.id);
+                      setMobileView('chat');
+                    }}
                     className={`w-full flex items-center h-8 px-2 rounded-lg text-xs font-semibold gap-2.5 transition-colors text-left ${
                       isActive 
                         ? 'bg-sky-500/10 text-sky-600' 
@@ -220,7 +227,10 @@ export default function ChatPage() {
                   return (
                     <button
                       key={member._id}
-                      onClick={() => handleSelectDM(member._id)}
+                      onClick={() => {
+                        handleSelectDM(member._id);
+                        setMobileView('chat');
+                      }}
                       className={`w-full flex items-center h-8 px-2 rounded-lg text-xs font-semibold gap-2.5 transition-colors text-left ${
                         isSelected 
                           ? 'bg-sky-500/10 text-sky-600' 
@@ -250,15 +260,25 @@ export default function ChatPage() {
       </div>
 
       {/* 2. Chat Area */}
-      <div className="grow flex flex-col justify-between min-w-0 bg-background/30">
+      <div className={`grow flex flex-col justify-between min-w-0 bg-background/30 ${
+        mobileView === 'chat' ? 'flex w-full' : 'hidden md:flex'
+      }`}>
         
         {/* Header */}
         <div className="h-14 border-b border-border px-6 flex items-center justify-between shrink-0 bg-card">
-          <div>
-            <h3 className="text-xs font-bold text-foreground tracking-tight flex items-center gap-1">
-              {getChannelDisplayName(activeChannelId)}
-            </h3>
-            <p className="text-[10px] text-muted mt-0.5">{getChannelDescription(activeChannelId)}</p>
+          <div className="flex items-center gap-3 min-w-0">
+            <button
+              onClick={() => setMobileView('list')}
+              className="p-1.5 rounded-lg border border-border bg-background text-muted hover:text-foreground md:hidden flex items-center justify-center transition-colors cursor-pointer shrink-0"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <div className="min-w-0">
+              <h3 className="text-xs font-bold text-foreground tracking-tight flex items-center gap-1 truncate">
+                {getChannelDisplayName(activeChannelId)}
+              </h3>
+              <p className="text-[10px] text-muted mt-0.5 truncate">{getChannelDescription(activeChannelId)}</p>
+            </div>
           </div>
         </div>
 

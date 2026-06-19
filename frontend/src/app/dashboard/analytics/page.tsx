@@ -167,34 +167,34 @@ export default function AnalyticsPage() {
           <Award className="w-4 h-4 text-sky-600" /> Team Performance Leaderboard
         </h3>
 
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-left text-xs">
+        <div className="overflow-x-auto no-scrollbar">
+          <table className="w-full min-w-[750px] border-collapse text-left text-xs">
             <thead>
               <tr className="border-b border-border text-slate-500 font-bold">
-                <th className="pb-3 pt-1">Rank</th>
-                <th className="pb-3 pt-1">Executive Name</th>
-                <th className="pb-3 pt-1">Role</th>
-                <th className="pb-3 pt-1 text-center">Assigned Leads</th>
-                <th className="pb-3 pt-1 text-center">Deals Won</th>
-                <th className="pb-3 pt-1 text-center">Conversion</th>
-                <th className="pb-3 pt-1 text-right">Tasks Completed</th>
+                <th className="pb-3 pt-1 px-4 whitespace-nowrap">Rank</th>
+                <th className="pb-3 pt-1 px-4 whitespace-nowrap">Executive Name</th>
+                <th className="pb-3 pt-1 px-4 whitespace-nowrap">Role</th>
+                <th className="pb-3 pt-1 px-4 text-center whitespace-nowrap">Assigned Leads</th>
+                <th className="pb-3 pt-1 px-4 text-center whitespace-nowrap">Deals Won</th>
+                <th className="pb-3 pt-1 px-4 text-center whitespace-nowrap">Conversion</th>
+                <th className="pb-3 pt-1 px-4 text-right whitespace-nowrap">Tasks Completed</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border text-slate-700">
               {performanceData.map((member: any, index: number) => (
-                <tr key={member.id} className="hover:bg-slate-55 transition-colors">
-                  <td className="py-3 font-mono font-bold text-slate-400">{index + 1}</td>
-                  <td className="py-3 font-bold text-foreground flex items-center gap-2">
+                <tr key={member.id} className="hover:bg-slate-50 transition-colors">
+                  <td className="py-3 px-4 font-mono font-bold text-slate-400 whitespace-nowrap">{index + 1}</td>
+                  <td className="py-3 px-4 font-bold text-foreground flex items-center gap-2 whitespace-nowrap">
                     <div className="w-6 h-6 rounded bg-sky-500/10 border border-sky-500/20 text-sky-600 flex items-center justify-center font-bold text-[8px] uppercase">
                       {member.name[0]}
                     </div>
                     {member.name}
                   </td>
-                  <td className="py-3 uppercase text-[9px] tracking-wider text-muted font-semibold">{member.role}</td>
-                  <td className="py-3 text-center font-mono">{member.assigned}</td>
-                  <td className="py-3 text-center text-emerald-600 font-mono font-bold">{member.won}</td>
-                  <td className="py-3 text-center font-mono font-bold">{member.conversion}%</td>
-                  <td className="py-3 text-right font-mono text-indigo-600">{member.tasksCompleted}</td>
+                  <td className="py-3 px-4 uppercase text-[9px] tracking-wider text-muted font-semibold whitespace-nowrap">{member.role}</td>
+                  <td className="py-3 px-4 text-center font-mono whitespace-nowrap">{member.assigned}</td>
+                  <td className="py-3 px-4 text-center text-emerald-600 font-mono font-bold whitespace-nowrap">{member.won}</td>
+                  <td className="py-3 px-4 text-center font-mono font-bold whitespace-nowrap">{member.conversion}%</td>
+                  <td className="py-3 px-4 text-right font-mono text-indigo-600 whitespace-nowrap">{member.tasksCompleted}</td>
                 </tr>
               ))}
             </tbody>
