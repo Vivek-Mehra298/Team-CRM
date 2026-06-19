@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 
-const DEFAULT_CLIENT_URL = 'http://localhost:3000';
+const DEFAULT_LOCAL_CLIENT_URL = 'http://localhost:3000';
+const DEFAULT_PRODUCTION_CLIENT_URL = 'https://team-crm-nine.vercel.app';
 let runtimeJwtSecret: string | undefined;
 
 const parseList = (value?: string) =>
@@ -9,10 +10,39 @@ const parseList = (value?: string) =>
     .map((item) => item.trim())
     .filter(Boolean);
 
-export const CLIENT_URL = process.env.CLIENT_URL || DEFAULT_CLIENT_URL;
+const stripTrailingSlashes = (value: string) => value.replace(/\/+$/, '');
+
+const normalizeUrl = (value?: string) => {
+  const trimmed = value?.trim();
+  return trimmed ? stripTrailingSlashes(trimmed) : undefined;
+};
+
+const normalizeOrigin = (value?: string) => {
+  const normalized = normalizeUrl(value);
+
+  if (!normalized) {
+    return undefined;
+  }
+
+  try {
+    return new URL(normalized).origin;
+  } catch {
+    return normalized;
+  }
+};
+
+const defaultClientUrl =
+  process.env.NODE_ENV === 'production'
+    ? DEFAULT_PRODUCTION_CLIENT_URL
+    : DEFAULT_LOCAL_CLIENT_URL;
+
+export const CLIENT_URL = normalizeUrl(process.env.CLIENT_URL) || defaultClientUrl;
 
 export const ALLOWED_ORIGINS = Array.from(
-  new Set([CLIENT_URL, ...parseList(process.env.CORS_ORIGIN)])
+  new Set(
+    [normalizeOrigin(CLIENT_URL), ...parseList(process.env.CORS_ORIGIN).map(normalizeOrigin)]
+      .filter((origin): origin is string => Boolean(origin))
+  )
 );
 
 export const getJwtSecret = () => {
