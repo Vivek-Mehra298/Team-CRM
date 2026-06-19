@@ -14,10 +14,17 @@ export const connectDB = async () => {
       serverSelectionTimeoutMS: 5000,
     });
     console.log('[DB]: Connected to MongoDB successfully.');
-  } catch (error) {
+  } catch (error: any) {
     console.error('================================================================');
-    console.error('[DB ERROR]: Could not connect to MongoDB. Error details:', error);
-    console.error('[DB ADVICE]: Please make sure MongoDB is running locally or provide a valid MONGODB_URI in backend/.env');
+    console.error('[DB ERROR]: Could not connect to MongoDB.');
+    console.error('Error:', error.message);
+    console.error('================================================================');
+    console.error('[DB TROUBLESHOOTING]');
+    console.error('1. Check MONGODB_URI in backend/.env is correct');
+    console.error('2. Verify username and password are valid');
+    console.error('3. Ensure IP is whitelisted in MongoDB Atlas');
+    console.error('4. For local MongoDB: Run "mongod" and ensure it\'s running');
+    console.error('5. Connection string format: mongodb+srv://username:password@cluster.mongodb.net/database');
     console.error('================================================================');
     process.exit(1);
   }
