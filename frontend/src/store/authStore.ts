@@ -7,7 +7,7 @@ export interface User {
   name: string;
   email: string;
   role: UserRole;
-  orgId: string;
+  orgId: string | { _id: string; name: string };
   isVerified: boolean;
 }
 
@@ -18,6 +18,7 @@ interface AuthState {
   login: (token: string, user: User) => void;
   logout: () => void;
   setVerified: () => void;
+  updateOrgName: (name: string) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => {
@@ -61,6 +62,21 @@ export const useAuthStore = create<AuthState>((set) => {
       set((state) => {
         if (!state.user) return {};
         const updatedUser = { ...state.user, isVerified: true };
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('teamcrm_user', JSON.stringify(updatedUser));
+        }
+        return { user: updatedUser };
+      });
+    },
+    updateOrgName: (name: string) => {
+      set((state) => {
+        if (!state.user) return {};
+        const updatedOrgId =
+          typeof state.user.orgId === 'object' && state.user.orgId !== null
+            ? { ...state.user.orgId, name }
+            : { _id: state.user.orgId, name };
+
+        const updatedUser = { ...state.user, orgId: updatedOrgId };
         if (typeof window !== 'undefined') {
           localStorage.setItem('teamcrm_user', JSON.stringify(updatedUser));
         }

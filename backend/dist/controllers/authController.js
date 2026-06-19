@@ -96,7 +96,7 @@ const signup = async (req, res) => {
                 name: newUser.name,
                 email: newUser.email,
                 role: newUser.role,
-                orgId: newUser.orgId,
+                orgId: org ? { _id: org._id, name: org.name } : { _id: newUser.orgId },
                 isVerified: newUser.isVerified,
             },
         });
@@ -113,7 +113,7 @@ const login = async (req, res) => {
         if (!email || !password) {
             return res.status(400).json({ error: 'Email and password are required' });
         }
-        const user = await User_1.default.findOne({ email: email.toLowerCase().trim() });
+        const user = await User_1.default.findOne({ email: email.toLowerCase().trim() }).populate('orgId', 'name');
         if (!user) {
             return res.status(401).json({ error: 'Invalid email or password' });
         }
@@ -126,12 +126,12 @@ const login = async (req, res) => {
             id: user._id,
             email: user.email,
             role: user.role,
-            orgId: user.orgId,
+            orgId: user.orgId._id || user.orgId,
             name: user.name,
         }, JWT_SECRET, { expiresIn: '7d' });
         // Create Audit Log
         const audit = new AuditLog_1.default({
-            orgId: user.orgId,
+            orgId: user.orgId._id || user.orgId,
             userId: user._id,
             userName: user.name,
             action: 'login',

@@ -56,6 +56,16 @@ app.use('/api/chat', chatRoutes_1.default);
 app.use('/api/notifications', notificationRoutes_1.default);
 app.use('/api/analytics', analyticsRoutes_1.default);
 app.use('/api/audit-logs', auditRoutes_1.default);
+// Compatibility routes for frontend builds that were deployed with a backend
+// base URL missing the /api prefix.
+app.use('/auth', authRoutes_1.default);
+app.use('/org', orgRoutes_1.default);
+app.use('/customers', customerRoutes_1.default);
+app.use('/tasks', taskRoutes_1.default);
+app.use('/chat', chatRoutes_1.default);
+app.use('/notifications', notificationRoutes_1.default);
+app.use('/analytics', analyticsRoutes_1.default);
+app.use('/audit-logs', auditRoutes_1.default);
 // Secure, Isolated File Downloads
 app.get('/api/files/download/:filename', auth_1.authenticateJWT, async (req, res) => {
     try {

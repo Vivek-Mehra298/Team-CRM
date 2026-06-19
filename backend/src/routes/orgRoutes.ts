@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { inviteMember, removeMember, changeRole, getMembers, getOrganizationDetails } from '../controllers/orgController';
+import { inviteMember, removeMember, changeRole, getMembers, getOrganizationDetails, updateOrganizationDetails } from '../controllers/orgController';
 import { authenticateJWT, requireRoles } from '../middleware/auth';
 
 const router = Router();
@@ -7,6 +7,7 @@ const router = Router();
 router.use(authenticateJWT);
 
 router.get('/', getOrganizationDetails);
+router.put('/', requireRoles(['leader']), updateOrganizationDetails);
 router.get('/members', getMembers);
 
 router.post('/invite', requireRoles(['leader', 'manager']), inviteMember);

@@ -112,7 +112,7 @@ export const signup = async (req: Request, res: Response) => {
         name: newUser.name,
         email: newUser.email,
         role: newUser.role,
-        orgId: newUser.orgId,
+        orgId: org ? { _id: org._id, name: org.name } : { _id: newUser.orgId },
         isVerified: newUser.isVerified,
       },
     });
@@ -130,7 +130,7 @@ export const login = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    const user = await User.findOne({ email: email.toLowerCase().trim() }).populate('orgId', 'name');
     if (!user) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
@@ -146,7 +146,7 @@ export const login = async (req: Request, res: Response) => {
         id: user._id,
         email: user.email,
         role: user.role,
-        orgId: user.orgId,
+        orgId: (user.orgId as any)._id || user.orgId,
         name: user.name,
       },
       JWT_SECRET,
@@ -155,7 +155,7 @@ export const login = async (req: Request, res: Response) => {
 
     // Create Audit Log
     const audit = new AuditLog({
-      orgId: user.orgId,
+      orgId: (user.orgId as any)._id || user.orgId,
       userId: user._id,
       userName: user.name,
       action: 'login',

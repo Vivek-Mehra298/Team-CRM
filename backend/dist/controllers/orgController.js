@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOrganizationDetails = exports.getMembers = exports.changeRole = exports.removeMember = exports.inviteMember = void 0;
+exports.updateOrganizationDetails = exports.getOrganizationDetails = exports.getMembers = exports.changeRole = exports.removeMember = exports.inviteMember = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const User_1 = __importDefault(require("../models/User"));
 const Invitation_1 = __importDefault(require("../models/Invitation"));
@@ -212,3 +212,36 @@ const getOrganizationDetails = async (req, res) => {
     }
 };
 exports.getOrganizationDetails = getOrganizationDetails;
+// Update org details
+const updateOrganizationDetails = async (req, res) => {
+    try {
+        if (!req.user)
+            return res.status(401).json({ error: 'Unauthorized' });
+        const { name } = req.body;
+        if (!name || typeof name !== 'string' || !name.trim()) {
+            return res.status(400).json({ error: 'Organization name is required' });
+        }
+        const org = await Organization_1.default.findById(req.user.orgId);
+        if (!org) {
+            return res.status(404).json({ error: 'Organization not found' });
+        }
+        const oldName = org.name;
+        org.name = name.trim();
+        await org.save();
+        // Create Audit Log
+        const audit = new AuditLog_1.default({
+            orgId: req.user.orgId,
+            userId: req.user.id,
+            userName: req.user.name,
+            action: 'update_organization',
+            details: `Updated organization name from "${oldName}" to "${org.name}".`,
+        });
+        await audit.save();
+        res.status(200).json({ message: 'Organization name updated successfully', org });
+    }
+    catch (error) {
+        console.error('Update organization error:', error);
+        res.status(500).json({ error: error.message || 'Internal Server Error' });
+    }
+};
+exports.updateOrganizationDetails = updateOrganizationDetails;

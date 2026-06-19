@@ -241,3 +241,40 @@ export const getOrganizationDetails = async (req: AuthenticatedRequest, res: Res
     res.status(500).json({ error: error.message || 'Internal Server Error' });
   }
 };
+
+// Update org details
+export const updateOrganizationDetails = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    if (!req.user) return res.status(401).json({ error: 'Unauthorized' });
+
+    const { name } = req.body;
+    if (!name || typeof name !== 'string' || !name.trim()) {
+      return res.status(400).json({ error: 'Organization name is required' });
+    }
+
+    const org = await Organization.findById(req.user.orgId);
+    if (!org) {
+      return res.status(404).json({ error: 'Organization not found' });
+    }
+
+    const oldName = org.name;
+    org.name = name.trim();
+    await org.save();
+
+    // Create Audit Log
+    const audit = new AuditLog({
+      orgId: req.user.orgId,
+      userId: req.user.id,
+      userName: req.user.name,
+      action: 'update_organization',
+      details: `Updated organization name from "${oldName}" to "${org.name}".`,
+    });
+    await audit.save();
+
+    res.status(200).json({ message: 'Organization name updated successfully', org });
+  } catch (error: any) {
+    console.error('Update organization error:', error);
+    res.status(500).json({ error: error.message || 'Internal Server Error' });
+  }
+};
+

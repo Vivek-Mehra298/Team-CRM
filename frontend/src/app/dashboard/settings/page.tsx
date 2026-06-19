@@ -63,12 +63,16 @@ export default function SettingsPage() {
 
   const updateOrgMutation = useMutation({
     mutationFn: (name: string) =>
-      new Promise((resolve) =>
-        setTimeout(() => resolve({ message: 'Organization name updated successfully' }), 500)
-      ),
-    onSuccess: () => {
+      apiFetch('/org', {
+        method: 'PUT',
+        bodyData: { name },
+      }),
+    onSuccess: (data) => {
       setOrgSuccess('Workspace settings saved successfully.');
       queryClient.invalidateQueries({ queryKey: ['org-details'] });
+      if (data?.org?.name) {
+        useAuthStore.getState().updateOrgName(data.org.name);
+      }
     },
     onError: (err: any) => {
       setOrgError(err.message || 'Failed to update organization details.');
