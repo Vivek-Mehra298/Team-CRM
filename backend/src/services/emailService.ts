@@ -231,3 +231,45 @@ export const sendInviteEmail = async (email: string, orgName: string, token: str
   console.log(inviteUrl);
   console.log('-----------------------------------------------------------------');
 };
+
+export const verifySmtpConnection = async () => {
+  if (!transporter) {
+    return {
+      status: 'missing_credentials',
+      message: 'SMTP credentials (SMTP_HOST, SMTP_USER, SMTP_PASS) are not configured in environment variables.',
+      env: {
+        host: !!process.env.SMTP_HOST,
+        port: process.env.SMTP_PORT || null,
+        user: !!process.env.SMTP_USER,
+        pass: !!process.env.SMTP_PASS,
+        from: process.env.SMTP_FROM || null
+      }
+    };
+  }
+  try {
+    await transporter.verify();
+    return {
+      status: 'connected',
+      message: 'SMTP connection verified successfully.',
+      env: {
+        host: process.env.SMTP_HOST,
+        port: process.env.SMTP_PORT,
+        user: process.env.SMTP_USER,
+        from: process.env.SMTP_FROM
+      }
+    };
+  } catch (error: any) {
+    return {
+      status: 'error',
+      message: error.message || 'Unknown SMTP verification error',
+      code: error.code,
+      command: error.command,
+      env: {
+        host: process.env.SMTP_HOST,
+        port: process.env.SMTP_PORT,
+        user: process.env.SMTP_USER,
+        from: process.env.SMTP_FROM
+      }
+    };
+  }
+};

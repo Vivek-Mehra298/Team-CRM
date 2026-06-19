@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import crypto from 'crypto';
 import User from '../models/User';
 import Invitation from '../models/Invitation';
@@ -6,7 +6,7 @@ import Organization from '../models/Organization';
 import Customer from '../models/Customer';
 import Task from '../models/Task';
 import AuditLog from '../models/AuditLog';
-import { sendInviteEmail } from '../services/emailService';
+import { sendInviteEmail, verifySmtpConnection } from '../services/emailService';
 import { AuthenticatedRequest } from '../middleware/auth';
 
 // Invite member
@@ -276,6 +276,16 @@ export const updateOrganizationDetails = async (req: AuthenticatedRequest, res: 
     res.status(200).json({ message: 'Organization name updated successfully', org });
   } catch (error: any) {
     console.error('Update organization error:', error);
+    res.status(500).json({ error: error.message || 'Internal Server Error' });
+  }
+};
+
+// Test SMTP Connection (Diagnostic Endpoint)
+export const testSmtp = async (req: Request, res: Response) => {
+  try {
+    const result = await verifySmtpConnection();
+    res.status(200).json(result);
+  } catch (error: any) {
     res.status(500).json({ error: error.message || 'Internal Server Error' });
   }
 };

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateOrganizationDetails = exports.getOrganizationDetails = exports.getMembers = exports.changeRole = exports.removeMember = exports.inviteMember = void 0;
+exports.testSmtp = exports.updateOrganizationDetails = exports.getOrganizationDetails = exports.getMembers = exports.changeRole = exports.removeMember = exports.inviteMember = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const User_1 = __importDefault(require("../models/User"));
 const Invitation_1 = __importDefault(require("../models/Invitation"));
@@ -247,3 +247,14 @@ const updateOrganizationDetails = async (req, res) => {
     }
 };
 exports.updateOrganizationDetails = updateOrganizationDetails;
+// Test SMTP Connection (Diagnostic Endpoint)
+const testSmtp = async (req, res) => {
+    try {
+        const result = await (0, emailService_1.verifySmtpConnection)();
+        res.status(200).json(result);
+    }
+    catch (error) {
+        res.status(500).json({ error: error.message || 'Internal Server Error' });
+    }
+};
+exports.testSmtp = testSmtp;

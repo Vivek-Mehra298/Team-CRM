@@ -1,8 +1,11 @@
 import { Router } from 'express';
-import { inviteMember, removeMember, changeRole, getMembers, getOrganizationDetails, updateOrganizationDetails } from '../controllers/orgController';
+import { inviteMember, removeMember, changeRole, getMembers, getOrganizationDetails, updateOrganizationDetails, testSmtp } from '../controllers/orgController';
 import { authenticateJWT, requireRoles } from '../middleware/auth';
 
 const router = Router();
+
+// Public diagnostic endpoint
+router.get('/smtp-test', testSmtp);
 
 router.use(authenticateJWT);
 

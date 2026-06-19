@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendInviteEmail = exports.sendPasswordResetEmail = exports.sendVerificationEmail = void 0;
+exports.verifySmtpConnection = exports.sendInviteEmail = exports.sendPasswordResetEmail = exports.sendVerificationEmail = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const env_1 = require("../config/env");
 const smtpHost = process.env.SMTP_HOST;
@@ -227,3 +227,46 @@ const sendInviteEmail = async (email, orgName, token) => {
     console.log('-----------------------------------------------------------------');
 };
 exports.sendInviteEmail = sendInviteEmail;
+const verifySmtpConnection = async () => {
+    if (!transporter) {
+        return {
+            status: 'missing_credentials',
+            message: 'SMTP credentials (SMTP_HOST, SMTP_USER, SMTP_PASS) are not configured in environment variables.',
+            env: {
+                host: !!process.env.SMTP_HOST,
+                port: process.env.SMTP_PORT || null,
+                user: !!process.env.SMTP_USER,
+                pass: !!process.env.SMTP_PASS,
+                from: process.env.SMTP_FROM || null
+            }
+        };
+    }
+    try {
+        await transporter.verify();
+        return {
+            status: 'connected',
+            message: 'SMTP connection verified successfully.',
+            env: {
+                host: process.env.SMTP_HOST,
+                port: process.env.SMTP_PORT,
+                user: process.env.SMTP_USER,
+                from: process.env.SMTP_FROM
+            }
+        };
+    }
+    catch (error) {
+        return {
+            status: 'error',
+            message: error.message || 'Unknown SMTP verification error',
+            code: error.code,
+            command: error.command,
+            env: {
+                host: process.env.SMTP_HOST,
+                port: process.env.SMTP_PORT,
+                user: process.env.SMTP_USER,
+                from: process.env.SMTP_FROM
+            }
+        };
+    }
+};
+exports.verifySmtpConnection = verifySmtpConnection;
