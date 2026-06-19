@@ -1,4 +1,7 @@
+import crypto from 'crypto';
+
 const DEFAULT_CLIENT_URL = 'http://localhost:3000';
+let runtimeJwtSecret: string | undefined;
 
 const parseList = (value?: string) =>
   (value || '')
@@ -15,9 +18,20 @@ export const ALLOWED_ORIGINS = Array.from(
 export const getJwtSecret = () => {
   const secret = process.env.JWT_SECRET;
 
-  if (!secret && process.env.NODE_ENV === 'production') {
-    throw new Error('JWT_SECRET must be set in production.');
+  if (secret) {
+    return secret;
   }
 
-  return secret || 'supersecretkeyteamcrm';
+  if (process.env.NODE_ENV === 'production') {
+    if (!runtimeJwtSecret) {
+      runtimeJwtSecret = crypto.randomBytes(32).toString('hex');
+      console.warn(
+        '[AUTH WARNING]: JWT_SECRET is not set. Generated a temporary runtime secret; users will be logged out after every server restart. Set JWT_SECRET in Render for stable sessions.'
+      );
+    }
+
+    return runtimeJwtSecret;
+  }
+
+  return 'supersecretkeyteamcrm';
 };
