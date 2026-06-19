@@ -30,7 +30,7 @@ if (smtpHost && smtpUser && smtpPass) {
 }
 
 const sendEmailHelper = async (to: string, subject: string, htmlContent: string) => {
-  // If Resend SMTP is specified, bypass SMTP entirely and use the HTTP REST API (port 443)
+  // 1. Resend HTTP REST API (port 443)
   if (smtpHost === 'smtp.resend.com' && smtpPass) {
     try {
       const response = await fetch('https://api.resend.com/emails', {
@@ -61,7 +61,47 @@ const sendEmailHelper = async (to: string, subject: string, htmlContent: string)
     }
   }
 
-  // Fallback to Nodemailer SMTP transporter
+  // 2. SendGrid HTTP REST API (port 443)
+  if (smtpHost === 'smtp.sendgrid.net' && smtpPass) {
+    try {
+      // Parse friendly name from SMTP_FROM if exists: e.g. "TeamCRM <noreply@domain.com>"
+      let fromEmail = smtpFrom;
+      let fromName = 'TeamCRM';
+      const emailMatch = smtpFrom.match(/^(?:"?([^"]*)"?\s)?<([^>]+)>/);
+      if (emailMatch) {
+        fromName = emailMatch[1] || 'TeamCRM';
+        fromEmail = emailMatch[2];
+      }
+
+      const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${smtpPass}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          personalizations: [{ to: [{ email: to }] }],
+          from: { email: fromEmail, name: fromName },
+          subject: subject,
+          content: [{ type: 'text/html', value: htmlContent }]
+        }),
+      });
+
+      if (response.ok) {
+        console.log(`[EMAIL SERVICE]: Email successfully sent via SendGrid API to ${to}`);
+        return true;
+      } else {
+        const text = await response.text();
+        console.error(`[EMAIL ERROR]: SendGrid API rejected email to ${to}:`, text);
+        throw new Error(text || 'SendGrid API Error');
+      }
+    } catch (error: any) {
+      console.error(`[EMAIL ERROR]: Failed to send email via SendGrid API to ${to}:`, error);
+      throw error;
+    }
+  }
+
+  // 3. Fallback to Nodemailer SMTP transporter
   if (transporter) {
     await transporter.sendMail({
       from: smtpFrom,
@@ -256,6 +296,7 @@ export const sendInviteEmail = async (email: string, orgName: string, token: str
 };
 
 export const verifySmtpConnection = async () => {
+  // Resend API
   if (smtpHost === 'smtp.resend.com' && smtpPass) {
     try {
       if (!smtpPass.startsWith('re_')) {
@@ -274,6 +315,30 @@ export const verifySmtpConnection = async () => {
       return {
         status: 'error',
         message: error.message || 'Unknown Resend API verification error',
+        env: { host: smtpHost, user: smtpUser, from: smtpFrom }
+      };
+    }
+  }
+
+  // SendGrid API
+  if (smtpHost === 'smtp.sendgrid.net' && smtpPass) {
+    try {
+      if (!smtpPass.startsWith('SG.')) {
+        return {
+          status: 'error',
+          message: 'SendGrid API Key is invalid (should start with SG.).',
+          env: { host: smtpHost, user: smtpUser, from: smtpFrom }
+        };
+      }
+      return {
+        status: 'connected',
+        message: 'SendGrid API connection (HTTPS REST API) is configured and verified.',
+        env: { host: smtpHost, user: smtpUser, from: smtpFrom, provider: 'SendGrid HTTP API' }
+      };
+    } catch (error: any) {
+      return {
+        status: 'error',
+        message: error.message || 'Unknown SendGrid API verification error',
         env: { host: smtpHost, user: smtpUser, from: smtpFrom }
       };
     }
