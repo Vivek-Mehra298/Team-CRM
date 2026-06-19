@@ -29,7 +29,12 @@ const defaultClientUrl = process.env.NODE_ENV === 'production'
     ? DEFAULT_PRODUCTION_CLIENT_URL
     : DEFAULT_LOCAL_CLIENT_URL;
 exports.CLIENT_URL = normalizeUrl(process.env.CLIENT_URL) || defaultClientUrl;
-exports.ALLOWED_ORIGINS = Array.from(new Set([normalizeOrigin(exports.CLIENT_URL), ...parseList(process.env.CORS_ORIGIN).map(normalizeOrigin)]
+exports.ALLOWED_ORIGINS = Array.from(new Set([
+    normalizeOrigin(exports.CLIENT_URL),
+    ...parseList(process.env.CORS_ORIGIN).map(normalizeOrigin),
+    'http://localhost:3000',
+    'http://127.0.0.1:3000'
+]
     .filter((origin) => Boolean(origin))));
 const getJwtSecret = () => {
     const secret = process.env.JWT_SECRET;
