@@ -43,7 +43,7 @@ export default function TeamPage() {
     mutationFn: (newInvite: { email: string; role: string }) =>
       apiFetch('/org/invite', { method: 'POST', bodyData: newInvite }),
     onSuccess: () => {
-      setInviteSuccess('Invitation logged! The mock email link is visible in your server console logs.');
+      setInviteSuccess('Invitation sent successfully! The recipient will receive an email link to join.');
       setInviteEmail('');
       setInviteRole('executive');
     },
